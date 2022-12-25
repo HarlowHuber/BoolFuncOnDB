@@ -1,0 +1,164 @@
+{
+error: "false",
+response: {
+solutions: {
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "kitchen",
+confidence: 0.999849796295166
+},
+{
+label: "laundry_room",
+confidence: 0.00005400212467066012
+},
+{
+label: "bar",
+confidence: 0.000034027059882646427
+},
+{
+label: "dining_area",
+confidence: 0.000006143453902041074
+},
+{
+label: "bathroom",
+confidence: 0.0000030588803383579943
+}
+],
+top_prediction: {
+label: "kitchen",
+confidence: 0.999849796295166
+}
+},
+re_roomtype_international: {
+predictions: [
+{
+label: "kitchen",
+confidence: 0.999995231628418
+},
+{
+label: "walk_in_closet",
+confidence: 4.596348333052447e-7
+},
+{
+label: "laundry_room",
+confidence: 4.0074809248835663e-7
+},
+{
+label: "details",
+confidence: 3.969958868310641e-7
+},
+{
+label: "dining_room",
+confidence: 3.702777462422091e-7
+}
+],
+top_prediction: {
+label: "kitchen",
+confidence: 0.999995231628418
+}
+},
+re_exterior_styles: {
+predictions: [
+{
+confidence: 0.9999725818634033,
+label: "not_front_house"
+},
+{
+label: "manufactured__mobile",
+confidence: 0.000022637592635987858
+},
+{
+label: "not_single_family",
+confidence: 6.894559034797965e-7
+},
+{
+label: "contemporary",
+confidence: 4.79667807695705e-7
+},
+{
+label: "bungalow",
+confidence: 3.554420324736185e-7
+}
+],
+top_prediction: {
+confidence: 0.9999725818634033,
+label: "not_front_house"
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.6033653846153846,
+y: 0.6223557692307693
+},
+label: "kitchen_island"
+},
+{
+center_point: {
+x: 0.8545673076923077,
+y: 0.5685096153846154
+},
+label: "stainless_steel"
+},
+{
+center_point: {
+x: 0.6225961538461539,
+y: 0.7175480769230769
+},
+label: "kitchen_bar"
+},
+{
+center_point: {
+x: 0.6298076923076923,
+y: 0.09014423076923077
+},
+label: "ceiling_fan"
+},
+{
+center_point: {
+x: 0.8581730769230769,
+y: 0.421875
+},
+label: "stainless_steel"
+},
+{
+center_point: {
+x: 0.4074519230769231,
+y: 0.3557692307692308
+},
+label: "stainless_steel"
+},
+{
+center_point: {
+x: 0.6466346153846154,
+y: 0.4170673076923077
+},
+label: "stainless_steel"
+},
+{
+center_point: {
+x: 0.7608173076923077,
+y: 0.4362980769230769
+},
+label: "stainless_steel"
+},
+{
+center_point: {
+x: 0.2868269230769231,
+y: 0.8365384615384616
+},
+label: "tile_floor"
+}
+]
+},
+re_condition_r1r6_global: {
+score: 2.2
+}
+}
+},
+time: "2021-01-05T15:47:41.122813",
+correlation_id: "c6a88cf1-c32c-4237-881f-020a7fbb46cc",
+version: "2"
+}

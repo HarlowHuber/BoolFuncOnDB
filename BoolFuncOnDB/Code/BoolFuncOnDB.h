@@ -7,10 +7,6 @@
 #include <unordered_map>
 
 
-// the file that serves as the csv dataset for this program. change as needed.
-const std::string filename = "new_houses_json_loc_bool_only.csv";
-
-
 // named attributes of dataset, not including expanded attributes
 std::vector<std::string> attributes;
 

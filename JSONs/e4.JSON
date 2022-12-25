@@ -1,0 +1,130 @@
+{
+response: {
+solutions: {
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "patio_terrace",
+confidence: 0.7935605645179749
+},
+{
+label: "community",
+confidence: 0.09185140579938889
+},
+{
+label: "pool",
+confidence: 0.07690766453742981
+},
+{
+label: "outdoor_structure",
+confidence: 0.009747072122991085
+},
+{
+label: "deck",
+confidence: 0.008540733717381954
+}
+],
+top_prediction: {
+label: "patio_terrace",
+confidence: 0.7935605645179749
+}
+},
+re_roomtype_international: {
+predictions: [
+{
+label: "terrace",
+confidence: 0.9851304888725281
+},
+{
+label: "pool",
+confidence: 0.007745484821498394
+},
+{
+label: "gym",
+confidence: 0.004673430696129799
+},
+{
+label: "reception-lobby",
+confidence: 0.0006511898245662451
+},
+{
+label: "parking",
+confidence: 0.0003464036562945694
+}
+],
+top_prediction: {
+label: "terrace",
+confidence: 0.9851304888725281
+}
+},
+re_exterior_styles: {
+predictions: [
+{
+confidence: 0.764893651008606,
+label: "not_front_house"
+},
+{
+label: "contemporary",
+confidence: 0.05916073741584427
+},
+{
+label: "oriental",
+confidence: 0.04120694407158787
+},
+{
+label: "log",
+confidence: 0.023473953343682297
+},
+{
+label: "mediterranean__spanish",
+confidence: 0.015608120260486302
+}
+],
+top_prediction: {
+confidence: 0.764893651008606,
+label: "not_front_house"
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.2856730769230769,
+y: 0.2033173076923077
+},
+label: "ceiling_fan"
+},
+{
+center_point: {
+x: 0.4987980769230769,
+y: 0.7800480769230769
+},
+label: "outdoor_living_space"
+},
+{
+center_point: {
+x: 0.5,
+y: 0.34375
+},
+label: "pergola"
+},
+{
+center_point: {
+x: 0.7536057692307692,
+y: 0.5829326923076923
+},
+label: "pool"
+}
+]
+},
+re_condition_r1r6_global: {
+score: null
+}
+}
+},
+error: "false",
+time: "2021-01-05T15:47:41.127023",
+correlation_id: "7c7f10fa-4edd-42f6-827e-5968008280aa",
+version: "2"
+}
+Interested in detecting more? Contact us about our premium models.

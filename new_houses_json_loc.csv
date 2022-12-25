@@ -1,0 +1,16 @@
+price,area,bedrooms,bathrooms,stories,mainroad,guestroom,basement,hotwaterheating,airconditioning,parking,prefarea,furnishingstatus,json_loc
+1725000,3796,4,4,1,no,no,yes,yes,yes,5,no,semi-furnished,D:\.School\Work\BoolFuncOnDB\JSONs\e1.json
+429500,1400,2,2,1,yes,yes,no,yes,yes,0,no,semi-furnished,D:\.School\Work\BoolFuncOnDB\JSONs\e2.json
+539995,2386,4,3,2,no,no,no,yes,yes,2,yes,unfurnished,D:\.School\Work\BoolFuncOnDB\JSONs\e3.json
+710000,2574,3,3,1,no,no,no,yes,yes,4,no,furnished,D:\.School\Work\BoolFuncOnDB\JSONs\e4.json
+290000,1794,3,2,1,no,no,no,yes,yes,2,no,semi-furnished,D:\.School\Work\BoolFuncOnDB\JSONs\e5.json
+700000,2200,3,2,2,no,no,no,yes,yes,1,no,unfurnished,D:\.School\Work\BoolFuncOnDB\JSONs\e6.json
+599000,2284,3,2,1,no,no,no,yes,yes,2,yes,unfurnished,
+1049000,3534,3,2,2,no,no,no,yes,yes,3,yes,furnished,
+455000,2184,3,2,1,yes,no,no,yes,yes,1,no,furnished,
+749990,2538,4,3,2,no,yes,no,yes,yes,3,yes,furnished,
+695000,2454,4,2,1,no,no,no,yes,yes,3,yes,unfurnished,
+499000,1620,3,2,1,no,no,no,yes,yes,2,yes,unfurnished,
+1099990,4906,5,4,1,no,no,yes,yes,yes,3,yes,furnished,
+659900,3580,5,4,2,no,no,no,yes,yes,2,yes,furnished,
+2995000,8490,6,7,2,no,yes,yes,yes,yes,3,yes,furnished,

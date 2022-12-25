@@ -1,0 +1,115 @@
+{
+error: "false",
+response: {
+solutions: {
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "front_house",
+confidence: 0.8098580241203308
+},
+{
+label: "back_house",
+confidence: 0.1550554484128952
+},
+{
+label: "property_exterior",
+confidence: 0.02345914952456951
+},
+{
+label: "community",
+confidence: 0.0020994439255446196
+},
+{
+label: "yard",
+confidence: 0.0016436019213870168
+}
+],
+top_prediction: {
+label: "front_house",
+confidence: 0.8098580241203308
+}
+},
+re_roomtype_international: {
+predictions: [
+{
+label: "outdoor_house",
+confidence: 0.9997499585151672
+},
+{
+label: "documents",
+confidence: 0.00014577257388737053
+},
+{
+label: "garden",
+confidence: 0.000015248835552483797
+},
+{
+label: "mountain_view",
+confidence: 0.000014068127711652778
+},
+{
+label: "pool",
+confidence: 0.000009245868568541482
+}
+],
+top_prediction: {
+label: "outdoor_house",
+confidence: 0.9997499585151672
+}
+},
+re_exterior_styles: {
+predictions: [
+{
+label: "farmhouse",
+confidence: 0.9334186315536499
+},
+{
+label: "modern_farmhouse",
+confidence: 0.0037797808181494474
+},
+{
+label: "ranch",
+confidence: 0.0036923314910382032
+},
+{
+label: "mediterranean__spanish",
+confidence: 0.0031482423655688763
+},
+{
+label: "art_deco",
+confidence: 0.0031402059830725193
+}
+],
+top_prediction: {
+label: "farmhouse",
+confidence: 0.9334186315536499
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.5024038461538461,
+y: 0.8641826923076923
+},
+label: "lawn"
+},
+{
+center_point: {
+x: 0.3365384615384615,
+y: 0.328125
+},
+label: "mountain_view"
+}
+]
+},
+re_condition_r1r6_global: {
+score: 3.4
+}
+}
+},
+time: "2021-01-05T15:47:41.123878",
+correlation_id: "383c63fd-b365-4c70-b2a2-f75d63fa6b06",
+version: "2"
+}

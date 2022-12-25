@@ -1,0 +1,115 @@
+{
+error: "false",
+response: {
+solutions: {
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "bathroom",
+confidence: 0.9987988471984863
+},
+{
+label: "laundry_room",
+confidence: 0.0011964405421167612
+},
+{
+label: "bedroom",
+confidence: 0.000001618384885659907
+},
+{
+label: "office",
+confidence: 7.589138704133802e-7
+},
+{
+label: "details",
+confidence: 3.1434947800335067e-7
+}
+],
+top_prediction: {
+label: "bathroom",
+confidence: 0.9987988471984863
+}
+},
+re_roomtype_international: {
+predictions: [
+{
+label: "bathroom",
+confidence: 0.99998939037323
+},
+{
+label: "kitchen",
+confidence: 0.000008421632628596853
+},
+{
+label: "laundry_room",
+confidence: 5.161862759450742e-7
+},
+{
+label: "room-bedroom",
+confidence: 2.4411625076936616e-7
+},
+{
+label: "office",
+confidence: 1.961996787258613e-7
+}
+],
+top_prediction: {
+label: "bathroom",
+confidence: 0.99998939037323
+}
+},
+re_exterior_styles: {
+predictions: [
+{
+confidence: 0.9999943971633911,
+label: "not_front_house"
+},
+{
+label: "pueblo_revival",
+confidence: 0.0000014062897086830617
+},
+{
+label: "contemporary",
+confidence: 0.0000010704190565036242
+},
+{
+label: "ranch",
+confidence: 2.861204864146316e-7
+},
+{
+label: "not_single_family",
+confidence: 2.6843652101149473e-7
+}
+],
+top_prediction: {
+confidence: 0.9999943971633911,
+label: "not_front_house"
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.4326923076923077,
+y: 0.11658653846153846
+},
+label: "skylight"
+},
+{
+center_point: {
+x: 0.41706730769230765,
+y: 0.8918269230769231
+},
+label: "hardwood_floor"
+}
+]
+},
+re_condition_r1r6_global: {
+score: 3.8
+}
+}
+},
+time: "2021-01-05T15:47:41.121318",
+correlation_id: "e577a6aa-6f68-4c27-9860-1480a9cb6fd6",
+version: "2"
+}

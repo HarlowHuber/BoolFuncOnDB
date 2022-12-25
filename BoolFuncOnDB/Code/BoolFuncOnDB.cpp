@@ -24,6 +24,7 @@ bool get_boolFunc(std::fstream& dataset)
 				int num_datapoint = 0;
 				attribute_count = dimension;
 				std::vector<std::pair<std::vector<int>, std::string>> datapoints;
+				std::getline(dataset, line); // skip first line (attributes)
 
 				while (std::getline(dataset, line))
 				{
@@ -55,13 +56,12 @@ bool get_boolFunc(std::fstream& dataset)
 									{
 										if (line2[0] == 'l')
 										{
-											label = line2.substr(8);
-											label = label.substr(0, label.size() - 1);
+											label = line2.substr(8, line2.size() - 1);
 
-											// make sure there are no duplicates by checking to see if the label is not in the
-											if (expanded_attribute_nums.find(label) == expanded_attribute_nums.end())
+											// make sure there are no duplicates
+											if (expanded_attribute_nums.find(label) != expanded_attribute_nums.end())
 											{
-												expanded_attribute_nums.insert({ label, attribute_count++ });
+												expanded_attribute_nums.insert({ label, ++attribute_count });
 												labels.push_back(label);
 											}
 										}
@@ -90,7 +90,7 @@ bool get_boolFunc(std::fstream& dataset)
 
 				for (auto element : expanded_attribute_nums)
 				{
-					std::cout << element.first << " == x" << element.second + 1 << std::endl;
+					std::cout << element.first << " == " << element.second << std::endl;
 				}
 
 				dataset.clear();
@@ -106,8 +106,6 @@ bool get_boolFunc(std::fstream& dataset)
 	// get function as a string in DNF form
 	std::cout << "Enter a Monotone Boolean function in the disjunctive normal form: " << std::flush;
 	std::string function;
-	std::cin.ignore();
-	std::cin.clear();
 	std::getline(std::cin, function);
 
 	if (image_labels)
@@ -235,9 +233,6 @@ void get_thresholds(std::fstream& dataset)
 	thresholds.resize(dimension);
 	std::fill(thresholds.begin(), thresholds.end(), std::make_pair(INT_MIN, INT_MAX));
 
-
-	std::getline(dataset, line); // skip first line
-
 	// parse dataset for non-boolean attributes
 	// while loop goes until all attributes are non-Boolean (c == dimension) or when all datapoints are parsed
 	while (std::getline(dataset, line)) 
@@ -245,7 +240,7 @@ void get_thresholds(std::fstream& dataset)
 		// retrieve datapoint
 		std::stringstream s(line);
 
-		for (int i = 0; std::getline(s, temp, ',') && i < dimension; i++)
+		for (int i = 0; std::getline(s, temp, ','); i++)
 		{
 			if (temp != "yes" && temp != "y" && temp != "true" && temp != "t" && temp != "1" &&
 				temp != "no" && temp != "n" && temp != "false" && temp != "f" && temp != "0" && !asked[i]) 
@@ -389,7 +384,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 
 				if (num != expanded_attribute_nums.end())
 				{
-					datapoint[num->second] = 1;
+					datapoint[num->second - 1] = 1;
 				}
 			}
 		}
@@ -402,7 +397,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 		// retrieve datapoint
 		std::stringstream s(line);
 
-		for (int i = 0; std::getline(s, temp, ',') && i < dimension; i++)
+		for (int i = 0; std::getline(s, temp, ','); i++)
 		{
 			for (char& c : temp)
 			{
@@ -453,7 +448,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 		{
 			for (int i = 0; i < (int)boolFunc.size(); i++)
 			{
-				if (expanded_attribute_LUT.find(counter) == expanded_attribute_LUT.end())
+				if (expanded_attribute_LUT.find(counter) != expanded_attribute_LUT.end())
 				{
 					for (int j = 0; j < dimension; j++)
 					{
@@ -528,7 +523,7 @@ int main()
 	// open dataset
 	std::fstream dataset;
 	//dataset.open("dataset.csv", std::ios::in); // read only
-	dataset.open(filename, std::ios::in);
+	dataset.open("new_houses_json_loc.csv", std::ios::in);
 	std::string line, temp;
 
 	if (!std::getline(dataset, line))

@@ -1,0 +1,136 @@
+{
+error: "false",
+response: {
+solutions: {
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "living_room",
+confidence: 0.9851387143135071
+},
+{
+label: "sunroom",
+confidence: 0.0066196187399327755
+},
+{
+label: "lobby",
+confidence: 0.003593406407162547
+},
+{
+label: "sitting_room",
+confidence: 0.003030413528904319
+},
+{
+label: "dining_area",
+confidence: 0.0005346699617803097
+}
+],
+top_prediction: {
+label: "living_room",
+confidence: 0.9851387143135071
+}
+},
+re_roomtype_international: {
+predictions: [
+{
+label: "living_room",
+confidence: 0.9518590569496155
+},
+{
+label: "living-dining_room",
+confidence: 0.044875696301460266
+},
+{
+label: "office",
+confidence: 0.0022962584625929594
+},
+{
+label: "reception-lobby",
+confidence: 0.0004900138010270894
+},
+{
+label: "gym",
+confidence: 0.00009749335731612518
+}
+],
+top_prediction: {
+label: "living_room",
+confidence: 0.9518590569496155
+}
+},
+re_exterior_styles: {
+predictions: [
+{
+confidence: 0.9996232986450195,
+label: "not_front_house"
+},
+{
+label: "contemporary",
+confidence: 0.0001262598242135482
+},
+{
+label: "pueblo_revival",
+confidence: 0.00008382100666892711
+},
+{
+label: "craftsman",
+confidence: 0.000026520928777529207
+},
+{
+label: "prairie",
+confidence: 0.00002558311120282042
+}
+],
+top_prediction: {
+confidence: 0.9996232986450195,
+label: "not_front_house"
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.6310096153846154,
+y: 0.4747596153846154
+},
+label: "natural_light"
+},
+{
+center_point: {
+x: 0.35216346153846156,
+y: 0.8894230769230769
+},
+label: "hardwood_floor"
+},
+{
+center_point: {
+x: 0.8870192307692308,
+y: 0.828125
+},
+label: "hardwood_floor"
+},
+{
+center_point: {
+x: 0.29447115384615385,
+y: 0.6021634615384616
+},
+label: "fireplace"
+},
+{
+center_point: {
+y: 0.18389423076923078,
+x: 0.5048076923076923
+},
+label: "coffered_ceiling"
+}
+]
+},
+re_condition_r1r6_global: {
+score: 1.6
+}
+}
+},
+time: "2021-01-05T15:47:41.123450",
+correlation_id: "2fe11e1e-f203-49f5-a4da-81da32a00159",
+version: "2"
+}

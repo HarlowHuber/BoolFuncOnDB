@@ -1,0 +1,136 @@
+{
+response: {
+solutions: {
+re_roomtype_international: {
+predictions: [
+{
+label: "room-bedroom",
+confidence: 0.9993414282798767
+},
+{
+label: "living-dining_room",
+confidence: 0.0004170773900114
+},
+{
+label: "living_room",
+confidence: 0.00020298946765251458
+},
+{
+label: "dining_room",
+confidence: 0.000009580541700415779
+},
+{
+label: "details",
+confidence: 0.000008338345651281998
+}
+],
+top_prediction: {
+label: "room-bedroom",
+confidence: 0.9993414282798767
+}
+},
+re_features_v3: {
+detections: [
+{
+center_point: {
+x: 0.33293269230769235,
+y: 0.1
+},
+label: "high_ceiling"
+},
+{
+center_point: {
+x: 0.8665865384615384,
+y: 0.8737980769230769
+},
+label: "hardwood_floor"
+},
+{
+center_point: {
+x: 0.4050480769230769,
+y: 0.14783653846153846
+},
+label: "notable_chandelier"
+},
+{
+center_point: {
+x: 0.21995192307692307,
+y: 0.18629807692307693
+},
+label: "natural_light"
+},
+{
+center_point: {
+x: 0.21033653846153846,
+y: 0.5432692307692308
+},
+label: "french_doors"
+}
+]
+},
+re_exterior_styles: {
+predictions: [
+{
+confidence: 0.9997332692146301,
+label: "not_front_house"
+},
+{
+label: "pueblo_revival",
+confidence: 0.00016205879775910148
+},
+{
+label: "mediterranean__spanish",
+confidence: 0.000033196325011086714
+},
+{
+label: "contemporary",
+confidence: 0.00001991292691849722
+},
+{
+label: "art_deco",
+confidence: 0.00000975879674292024
+}
+],
+top_prediction: {
+confidence: 0.9997332692146301,
+label: "not_front_house"
+}
+},
+re_roomtype_global_v2: {
+predictions: [
+{
+label: "bedroom",
+confidence: 0.9923911690711975
+},
+{
+label: "misc_room",
+confidence: 0.00292386906221509
+},
+{
+label: "sitting_room",
+confidence: 0.0016468111425638199
+},
+{
+label: "interior_entry",
+confidence: 0.0006424462771974504
+},
+{
+label: "living_room",
+confidence: 0.0005048041930422187
+}
+],
+top_prediction: {
+label: "bedroom",
+confidence: 0.9923911690711975
+}
+},
+re_condition_r1r6_global: {
+score: 1.9
+}
+}
+},
+error: "false",
+time: "2021-09-30T16:14:10.430144",
+correlation_id: "e1b036c9-9eb6-4d8a-a360-48617fcea07c",
+version: "2"
+}
