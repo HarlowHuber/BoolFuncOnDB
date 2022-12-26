@@ -309,11 +309,24 @@ void write_func_and_thresholds(std::fstream& results)
 	{
 		std::string temp = "";
 
-		for (int j = 0; j < dimension; j++)
+		if (image_labels)
 		{
-			if (boolFunc[i][j])
+			for (int j = 0; j < attribute_count; j++)
 			{
-				temp += "x" + std::to_string(j + 1);
+				if (boolFunc[i][j])
+				{
+					temp += "x" + std::to_string(j + 1);
+				}
+			}
+		}
+		else
+		{
+			for (int j = 0; j < dimension; j++)
+			{
+				if (boolFunc[i][j])
+				{
+					temp += "x" + std::to_string(j + 1);
+				}
 			}
 		}
 

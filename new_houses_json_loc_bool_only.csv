@@ -1,10 +1,10 @@
 mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,json_loc
-no,no,yes,yes,yes,no,D:\.School\Work\BoolFuncOnDB\JSONs\e1.json
-yes,yes,no,yes,yes,no,D:\.School\Work\BoolFuncOnDB\JSONs\e2.json
-no,no,no,yes,yes,yes,D:\.School\Work\BoolFuncOnDB\JSONs\e3.json
-no,no,no,yes,yes,no,D:\.School\Work\BoolFuncOnDB\JSONs\e4.json
-no,no,no,yes,yes,no,D:\.School\Work\BoolFuncOnDB\JSONs\e5.json
-no,no,no,yes,yes,no,D:\.School\Work\BoolFuncOnDB\JSONs\e6.json
+no,no,yes,yes,yes,no,JSONs\e1.json
+yes,yes,no,yes,yes,no,JSONs\e2.json
+no,no,no,yes,yes,yes,JSONs\e3.json
+no,no,no,yes,yes,no,JSONs\e4.json
+no,no,no,yes,yes,no,JSONs\e5.json
+no,no,no,yes,yes,no,JSONs\e6.json
 no,no,no,yes,yes,yes,
 no,no,no,yes,yes,yes,
 yes,no,no,yes,yes,no,
