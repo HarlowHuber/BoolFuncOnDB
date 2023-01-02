@@ -1,18 +1,36 @@
-x3x7 v x22
-
-mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,json_loc,class,,Boolean representation
-no,no,yes,yes,yes,no,JSONs\e1.json,1,,=0,0,1,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-no,no,no,yes,yes,no,JSONs\e6.json,1,,=0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-no,no,no,yes,yes,yes,,1,,=0,0,0,1,1,1,1,
-no,no,no,yes,yes,yes,,1,,=0,0,0,1,1,1,1,
-yes,no,no,yes,yes,no,,1,,=1,0,0,1,1,0,1,
-no,yes,no,yes,yes,yes,,1,,=0,1,0,1,1,1,1,
-no,no,no,yes,yes,yes,,1,,=0,0,0,1,1,1,1,
-no,no,no,yes,yes,yes,,1,,=0,0,0,1,1,1,1,
-no,no,yes,yes,yes,yes,,1,,=0,0,1,1,1,1,1,
-no,no,no,yes,yes,yes,,1,,=0,0,0,1,1,1,1,
-no,yes,yes,yes,yes,yes,,1,,=0,1,1,1,1,1,1,
-yes,yes,no,yes,yes,no,JSONs\e2.json,0,,=1,1,0,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-no,no,no,yes,yes,yes,JSONs\e3.json,0,,=0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-no,no,no,yes,yes,no,JSONs\e4.json,0,,=0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-no,no,no,yes,yes,no,JSONs\e5.json,0,,=0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+x1x2 v x20
+,,,,,,,,,Boolean representation
+mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,json_loc,class,,mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,natural_light,hardwood_floor,fireplace,coffered_ceiling,kitchen_island,stainless_steel,kitchen_bar,ceiling_fan,tile_floor,lawn,mountain_view,outdoor_living_space,pergola,pool,skylight,high_ceiling,notable_chandelier,french_doors,not_front_house,pueblo_revival",mediterranean__spanish",contemporary",art_deco",bedroom",misc_room",sitting_room",interior_entry",living_room",class
+yes,yes,no,yes,yes,no,JSONs\e2.json,1,,=1,1,0,1,1,0,,,,,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,1
+no,no,no,yes,yes,no,JSONs\e4.json,1,,=0,0,0,1,1,0,,,,,,,,,,,,1,1,1,,,,,,,,,,,,,,,1
+no,no,yes,yes,yes,no,JSONs\e1.json,0,,=0,0,1,1,1,0,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,yes,JSONs\e3.json,0,,=0,0,0,1,1,1,,,,,,,,,,1,1,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,no,JSONs\e5.json,0,,=0,0,0,1,1,0,,,,,,,,,,,,,,,1,,,,,,,,,,,,,,0
+no,no,no,yes,yes,no,JSONs\e6.json,0,,=0,0,0,1,1,0,,,,,,,,,,,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+yes,no,no,yes,yes,no,,0,,=1,0,0,1,1,0,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,yes,no,yes,yes,yes,,0,,=0,1,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,yes,yes,yes,yes,,0,,=0,0,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+no,yes,yes,yes,yes,yes,,0,,=0,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,,,0
+x1x2 v x3
+,,,,,,,,,Boolean representation
+mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,json_loc,class,,mainroad,guestroom,basement,hotwaterheating,airconditioning,prefarea,class
+no,no,yes,yes,yes,no,JSONs\e1.json,1,,=0,0,1,1,1,0,1
+yes,yes,no,yes,yes,no,JSONs\e2.json,1,,=1,1,0,1,1,0,1
+no,no,yes,yes,yes,yes,,1,,=0,0,1,1,1,1,1
+no,yes,yes,yes,yes,yes,,1,,=0,1,1,1,1,1,1
+no,no,no,yes,yes,yes,JSONs\e3.json,0,,=0,0,0,1,1,1,0
+no,no,no,yes,yes,no,JSONs\e4.json,0,,=0,0,0,1,1,0,0
+no,no,no,yes,yes,no,JSONs\e5.json,0,,=0,0,0,1,1,0,0
+no,no,no,yes,yes,no,JSONs\e6.json,0,,=0,0,0,1,1,0,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,0
+yes,no,no,yes,yes,no,,0,,=1,0,0,1,1,0,0
+no,yes,no,yes,yes,yes,,0,,=0,1,0,1,1,1,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,0
+no,no,no,yes,yes,yes,,0,,=0,0,0,1,1,1,0

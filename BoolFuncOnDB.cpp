@@ -98,21 +98,29 @@ bool get_boolFunc(std::fstream& dataset)
 			}
 			else
 			{
+				attribute_count = dimension;
 				std::cout << "There is no possibility of expansion." << std::endl;
 			}
+		}
+		else
+		{
+			attribute_count = dimension;
+			image_labels = false;
 		}
 	}
 
 	// get function as a string in DNF form
-	std::cout << "Enter a Monotone Boolean function in the disjunctive normal form: " << std::flush;
+	std::cout << "Enter a Monotone Boolean function in the disjunctive normal form.\n" 
+		<< "No parenthesis and spaces between clauses are a must; e.g. \"x1x2 v x3\": " << std::flush;
 	std::string function;
 	std::cin.ignore();
 	std::cin.clear();
 	std::getline(std::cin, function);
+	std::vector<int> clause(attribute_count, 0);
 
 	if (image_labels)
 	{
-		std::vector<int> clause(attribute_count);
+		//	std::vector<int> clause(attribute_count);
 
 		// put function into a matrix
 		for (int i = 0; i < (int)function.size(); i++)
@@ -168,7 +176,7 @@ bool get_boolFunc(std::fstream& dataset)
 	}
 	else
 	{
-		std::vector<int> clause(dimension);
+		//std::vector<int> clause(dimension);
 
 		// put function into a matrix
 		for (int i = 0; i < (int)function.size(); i++)
@@ -361,14 +369,42 @@ void write_func_and_thresholds(std::fstream& results)
 		}
 	}
 
-	results << "\n";
+	for (int i = 0; i < dimension + 3; i++)
+	{
+		results << ",";
+	}
+
+	results << "Boolean representation\n";
 
 	for (auto a : attributes)
 	{
 		results << a << ",";
 	}
 
-	results << "class,,Boolean representation" << "\n";
+	results << "class";
+
+	// print attributes for Boolean represenation section
+	std::vector<std::string> temp_vec(attribute_count - dimension);
+
+	for (auto element : expanded_attribute_nums)
+	{
+		temp_vec[element.second - dimension] = element.first;
+	}
+
+	results << ",,";
+
+	for (int i = 0; i < dimension; i++)
+	{
+		results << attributes[i] << ",";
+	}
+
+
+	for (auto element : temp_vec)
+	{
+		results << element << ",";
+	}
+
+	results << "class\n";
 }
 
 // FIX FOR JSONS!!!
@@ -388,7 +424,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 		// check if datapoint is in look up table
 		// if it is, then the datapoint is the size of attribute_count, not the dimension.
 		// moreover, those attributes that are the value in the look up table will be immedietely assigned as 1 in the datapoint 
-		std::vector<int> datapoint;
+		std::vector<int> datapoint(attribute_count, 0);
 		auto datapoint_search = expanded_attribute_LUT.find(counter);
 
 		if (datapoint_search != expanded_attribute_LUT.end())
@@ -408,7 +444,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 		}
 		else
 		{
-			datapoint.resize(dimension);
+			//datapoint.resize(dimension);
 		}
 
 
@@ -468,6 +504,8 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 			{
 				if (expanded_attribute_LUT.find(counter) == expanded_attribute_LUT.end())
 				{
+					bool stop = false;
+
 					for (int j = 0; j < dimension; j++)
 					{
 						// if boolean function at one point is true and the datapoint at that point is not true, then datapoint is a class of 0
@@ -475,7 +513,25 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 						if (boolFunc[i][j] && !datapoint[j])
 						{
 							clauses[i] = false;
+							stop = true;
 							break; // try next clause
+						} 
+						else if (boolFunc[i][j] && datapoint[j]) 
+						{
+							stop = true;
+						}
+					}
+
+					// make sure that a clause is false if a clause is all zeroes until an expanded attribute, 
+					// it will be falsely marked as true
+					if (!stop)
+					{
+						for (int j = dimension; j < attribute_count; j++)
+						{
+							if (boolFunc[i][j])
+							{
+								clauses[i] = false;
+							}
 						}
 					}
 				}
@@ -603,12 +659,23 @@ int main()
 		{
 			results << datapoint.second << ",=";
 
-			for (auto element : datapoint.first)
+			for (int i = 0; i < attribute_count; i++)
 			{
-				results << element << ",";
+				if (datapoint.first[i])
+				{
+					results << datapoint.first[i] << ",";
+				}
+				else if (i < dimension)
+				{
+					results << datapoint.first[i] << ",";
+				}
+				else
+				{
+					results << ",";
+				}
 			}
 
-			results << "\n";
+			results << datapoint.first[attribute_count] << "\n"; // datapoint is + 1 because of CLASS/value
 		}
 
 		results.close();
