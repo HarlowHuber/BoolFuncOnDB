@@ -8,11 +8,24 @@
 
 
 // the file that serves as the csv dataset for this program. change as needed.
-const std::string filename = "new_houses_json_loc_bool_only.csv";
+const std::string filename = "kv_test.csv";
 
 
 // named attributes of dataset, not including expanded attributes
 std::vector<std::string> attributes;
+
+
+// true if k-values are used
+bool kv_used = false;
+
+
+// the size is the dimension. 0 == '=' // 1 == '<' // 2 == '>' // 3 == '<=' // 4 == '>='
+// this data structure represents what each k-value attributes is. e.g. x1>1 & x2<3 is [2, 1] for 
+std::vector<std::vector<int>> kv_order;
+
+
+// the k-value of each attribute, if applicable
+std::vector<int> kv_attributes;
 
 
 // the number of attributes. equal to the dimension if there are no expanded attributes.
@@ -31,20 +44,29 @@ std::unordered_map<std::string, int> expanded_attribute_nums;
 bool image_labels = false;
 
 
-// the dimension, which is th number of attributes, not including the expanded ones (if any)
+// the dimension, which is the number of attributes, not including the expanded ones (if any)
 int dimension;
 
 
 // vector representation of the Boolean function (a row is a clause; e.g. x1x2 w/ 4 dimensions is a row of { 1, 1, 0, 0 }
-std::vector<std::vector<int>> boolFunc;
+std::vector<std::vector<int>> dbFunc;
 
 
 // pair->first is bottom of range (min threshold) and pair->second is top of range (max threshold)
+// these thresholds also define the lower and upper numeric data limit of for k-value
+// the outer vector represents the threhold for each attribute. the inner pair is the pair of thresholds.
 std::vector<std::pair<int, int>> thresholds(dimension, std::make_pair(INT_MIN, INT_MAX));
 
 
+// these define thresholds for k-value. these specific thresholds are between k-values, so size is max k-value - 1
+// the other thresholds data structure can store an upper and lower bound, however
+// the outer vector represents the list of thresholds for each k-value attribute. each inner vector has a size of k-value - 1. 
+// the upper and lower limits for the thresholds for a specific attribute is defined by the thresholds data structure above.
+std::vector<std::vector<int>> kv_thresholds;
+
+
 // retrieve the Boolean function
-bool get_boolFunc(std::fstream& dataset);
+bool get_dbFunc(std::fstream& dataset);
 
 
 // retrieve the thresholds if there is any non-Boolean data

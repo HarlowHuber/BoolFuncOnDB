@@ -1,7 +1,7 @@
-#include "BoolFuncOnDB.h"
+#include "boolFuncOnDB.h"
 
 
-bool get_boolFunc(std::fstream& dataset)
+bool get_dbFunc(std::fstream& dataset)
 {
 	// ADD  HERE
 	// ask user if they want to expand the dataset with those labels that came from any image annotations in the dataset
@@ -22,7 +22,6 @@ bool get_boolFunc(std::fstream& dataset)
 				
 				std::string line, temp;
 				int num_datapoint = 0;
-				attribute_count = dimension;
 				std::vector<std::pair<std::vector<int>, std::string>> datapoints;
 
 				while (std::getline(dataset, line))
@@ -113,15 +112,13 @@ bool get_boolFunc(std::fstream& dataset)
 	std::cout << "Enter a Monotone Boolean function in the disjunctive normal form.\n" 
 		<< "No parenthesis and spaces between clauses are a must; e.g. \"x1x2 v x3\": " << std::flush;
 	std::string function;
-	std::cin.ignore();
 	std::cin.clear();
 	std::getline(std::cin, function);
-	std::vector<int> clause(attribute_count, 0);
+	std::vector<int> clause(attribute_count, -1);
+	std::vector<int> kv_order_temp(dimension, -1);
 
 	if (image_labels)
 	{
-		//	std::vector<int> clause(attribute_count);
-
 		// put function into a matrix
 		for (int i = 0; i < (int)function.size(); i++)
 		{
@@ -156,8 +153,8 @@ bool get_boolFunc(std::fstream& dataset)
 			// if new clause
 			else if (function[i] == 'v')
 			{
-				boolFunc.push_back(clause);
-				std::fill(clause.begin(), clause.end(), 0);
+				dbFunc.push_back(clause);
+				std::fill(clause.begin(), clause.end(), -1);
 				i++;
 			}
 			else if (function[i] == ' ')
@@ -172,11 +169,11 @@ bool get_boolFunc(std::fstream& dataset)
 			}
 		}
 
-		boolFunc.push_back(clause);
+		dbFunc.push_back(clause);
 	}
 	else
 	{
-		//std::vector<int> clause(dimension);
+		int k = -1;
 
 		// put function into a matrix
 		for (int i = 0; i < (int)function.size(); i++)
@@ -189,7 +186,7 @@ bool get_boolFunc(std::fstream& dataset)
 				int temp2 = (int)function.find_first_of("x", start);
 				int end = temp1 > temp2 ? temp2 : temp1;
 				std::string j = function.substr(start, abs(start - end));
-				int k = atoi(j.c_str()) - 1; // -1 on error either from atoi() of user entered x0
+				k = atoi(j.c_str()) - 1; // -1 on error either from atoi() of user entered x0
 
 				if (-1 < k && k < dimension)
 				{
@@ -212,11 +209,80 @@ bool get_boolFunc(std::fstream& dataset)
 			// if new clause
 			else if (function[i] == 'v')
 			{
-				boolFunc.push_back(clause);
-				std::fill(clause.begin(), clause.end(), 0);
+				kv_order.push_back(kv_order_temp);
+				dbFunc.push_back(clause);
+				std::fill(clause.begin(), clause.end(), -1);
+				std::fill(kv_order_temp.begin(), kv_order_temp.end(), -1);
 				i++;
 			}
 			else if (function[i] == ' ')
+			{
+				continue;
+			}
+			else if (function[i] == '>')
+			{
+				// check if >=
+				if (i + 2 < (int)function.size() && function[i + 1] == '=')
+				{
+					kv_order_temp[k] = 4;
+					i += 2;
+				}
+				else if (i + 1 < (int)function.size())
+				{
+					kv_order_temp[k] = 2;
+					i++;
+				}
+				// else error
+				else
+				{
+					std::cout << "Function is not input as specified." << std::flush;
+
+					return false;
+				}
+
+				clause[k] = function[i] - 48;
+			}
+			else if (function[i] == '<')
+			{
+				// check if <=
+				if (i + 2 < (int)function.size() && function[i + 1] == '=')
+				{
+					kv_order_temp[k] = 3;
+					i += 2;
+				}
+				else if (i + 1 < (int)function.size())
+				{
+					kv_order_temp[k] = 1;
+					i++;
+				}
+				// else error
+				else
+				{
+					std::cout << "Function is not input as specified." << std::flush;
+
+					return false;
+				}
+
+				clause[k] = function[i] - 48;
+			}
+			else if (function[i] == '=')
+			{
+				if (i + 1 < (int)function.size())
+				{
+					kv_order_temp[k] = 0;
+					i++;
+				}
+				// else error
+				else
+				{
+					std::cout << "Function is not input as specified." << std::flush;
+
+					return false;
+				}
+
+				clause[k] = function[i] - 48;
+			}
+			else if (function[i] == '&')
 			{
 				continue;
 			}
@@ -228,7 +294,8 @@ bool get_boolFunc(std::fstream& dataset)
 			}
 		}
 
-		boolFunc.push_back(clause);
+		kv_order.push_back(kv_order_temp);
+		dbFunc.push_back(clause);
 	}
 
 	return true;
@@ -237,14 +304,37 @@ bool get_boolFunc(std::fstream& dataset)
 
 void get_thresholds(std::fstream& dataset)
 {
+	int use_kv_thresholds;
+	std::cout << "Does the user want to use ordinal (ordered from least to greatest) k-values for numeric attributes? (1/0):" << std::flush;
+	std::cin >> use_kv_thresholds;
+
 	std::string line, temp;
 	int c = 0; // count each attribute checked
 	std::vector<bool> asked(dimension, false);
 	thresholds.resize(dimension);
 	std::fill(thresholds.begin(), thresholds.end(), std::make_pair(INT_MIN, INT_MAX));
+	std::vector<bool> kv(dimension, false); // true if there are assigned kv attributes
 
+	if (use_kv_thresholds)
+	{
+		kv_thresholds.resize(dimension);
+		kv_used = true;
+	}
 
-	std::getline(dataset, line); // skip first line
+	for (int i = 0; i < dimension; i++)
+	{
+		std::string kv_str = attributes[i];
+
+		try
+		{
+			if (kv_str.substr(kv_str.length() - 3) == "_kv")
+			{
+				kv[i] = true;
+			}
+		}
+		catch (std::exception){}
+
+	}
 
 	// parse dataset for non-boolean attributes
 	// while loop goes until all attributes are non-Boolean (c == dimension) or when all datapoints are parsed
@@ -256,40 +346,149 @@ void get_thresholds(std::fstream& dataset)
 		for (int i = 0; std::getline(s, temp, ',') && i < dimension; i++)
 		{
 			if (temp != "yes" && temp != "y" && temp != "true" && temp != "t" && temp != "1" &&
-				temp != "no" && temp != "n" && temp != "false" && temp != "f" && temp != "0" && !asked[i]) 
+				temp != "no" && temp != "n" && temp != "false" && temp != "f" && temp != "0" && !asked[i] && kv[i] != true)
 			{
 				asked[i] = true;
 				c++;
-				int range, threshold;
-				std::cout << "Is the threshold for attribute " << attributes[i] << " a range? (1/0): " << std::flush;
-				std::cin >> range;
 
-				if (range)
+				if (use_kv_thresholds)
 				{
-					std::cout << "Please enter the min threshold: " << std::flush;
-					std::cin >> threshold;
-					thresholds[i].first = threshold;
+					// get thresholds for numeric values. k-value => n - 1 thresholds minimum and n + 1 thresholds maximum
+					std::cout << "What is the k-value for this attribute '" << attributes[i] << "' (must be integers greater than 1)? Enter: " << std::flush;
 
-					std::cout << "Please enter the max threshold: " << std::flush;
-					std::cin >> threshold;
-					thresholds[i].second = threshold;
+					try
+					{
+						std::cin >> kv_attributes[i];
+					}
+					catch (std::exception& e) 
+					{
+						std::cerr << e.what() << std::endl;
+						std::cout << "Value  not convertable from string to number (k-value)." << std::endl;
+
+						exit(EXIT_FAILURE);
+					}
+
+					// lower bound
+					std::cout << "Is there a lower bound for this k-valued attribute? (1/0): " << std::flush;
+					int y = 0;
+					std::cin >> y;
+
+					if (y)
+					{
+						std::cout << "Please enter the lower bound: " << std::flush;
+								
+						try
+						{
+							std::cin >> thresholds[i].first;
+						}
+						catch (std::exception& e)
+						{
+							std::cerr << e.what() << std::endl;
+							std::cout << "Value not convertable from string to number (k-value)." << std::endl;
+						}
+					}
+					
+					// thresholds between k-values
+					std::vector<int> kv_threshold_temp(kv_attributes[i] - 1);
+					kv_thresholds.resize(dimension);
+
+					for (int j = 0; j < kv_attributes[i] - 1; j++)
+					{
+						std::cout << "What is the threshold for between the k-values " << j << " and " << j + 1 << " of attribute x"
+							<< i + 1 << "(" << attributes[i] << ")?: " << std::flush;
+
+						try
+						{
+							std::cin >> kv_threshold_temp[j];
+						}
+						catch (std::exception& e) 
+						{
+							std::cerr << e.what() << std::endl;
+							std::cout << "Value not convertable from string to number (k-value)." << std::endl;
+
+							exit(EXIT_FAILURE);
+						}
+					}
+
+					kv_thresholds[i] = kv_threshold_temp;
+
+					// upper bound
+					std::cout << "Is there an upper bound for this k-valued attribute? (1/0): " << std::flush;
+					std::cin >> y;
+
+					if (y)
+					{
+						std::cout << "Please enter the upper bound: " << std::flush;
+
+						try
+						{
+							std::cin >> thresholds[i].second;
+						}
+						catch (std::exception& e)
+						{
+							std::cerr << e.what() << std::endl;
+							std::cout << "Value not convertable from string to number (k-value)." << std::endl;
+						}
+					}
 				}
 				else
 				{
-					std::cout << "Please enter a threshold for this attribute: " << std::flush;
-					std::cin >> threshold;
-					std::cout << "Is this threshold a max threshold or min threshold? (1/0): " << std::flush;
-					int max;
-					std::cin >> max;
+					int range, threshold;
+					std::cout << "Is the threshold for attribute " << attributes[i] << " a range? (1/0): " << std::flush;
+					std::cin >> range;
 
-					if (max)
+					if (range)
 					{
+						std::cout << "Please enter the min threshold: " << std::flush;
+						std::cin >> threshold;
+						thresholds[i].first = threshold;
+
+						std::cout << "Please enter the max threshold: " << std::flush;
+						std::cin >> threshold;
 						thresholds[i].second = threshold;
 					}
 					else
 					{
-						thresholds[i].first = threshold;
+						std::cout << "Please enter a threshold for this attribute: " << std::flush;
+						std::cin >> threshold;
+						std::cout << "Is this threshold a max threshold or min threshold? (1/0): " << std::flush;
+						int max;
+						std::cin >> max;
+
+						if (max)
+						{
+							thresholds[i].second = threshold;
+						}
+						else
+						{
+							thresholds[i].first = threshold;
+						}
 					}
+				}
+			}
+			else if (kv[i] == true) // retrieve k-value 
+			{
+				asked[i] = true;
+				c++;
+				kv_used = true;
+
+				int kv_a = -1;
+				
+				try
+				{
+					kv_a = stoi(temp);
+				}
+				catch (std::exception& e)
+				{
+					std::cerr << e.what() << std::endl;
+					std::cout << "Value in dataset not convertable from string to number (k-value)." << std::endl;
+
+					exit(EXIT_FAILURE);
+				}
+
+				if (kv_a >= kv_attributes[i])
+				{
+					kv_attributes[i] = kv_a + 1;
 				}
 			}
 		}
@@ -311,77 +510,177 @@ void get_thresholds(std::fstream& dataset)
 void write_func_and_thresholds(std::fstream& results)
 {
 	// write function and thresholds (if any)
-	std::string boolFuncStr = "";
+	std::string dbFuncStr = "";
 
-	for (int i = 0; i < (int)boolFunc.size(); i++)
+	for (int i = 0; i < (int)dbFunc.size(); i++)
 	{
 		std::string temp = "";
 
-		if (image_labels)
+		for (int j = 0; j < (int)dbFunc[i].size(); j++)
 		{
-			for (int j = 0; j < attribute_count; j++)
+			if (dbFunc[i][j] > 0 || kv_used && !dbFunc[i][j])
 			{
-				if (boolFunc[i][j])
+				if (!temp.empty())
 				{
-					temp += "x" + std::to_string(j + 1);
+					temp += " & ";
 				}
-			}
-		}
-		else
-		{
-			for (int j = 0; j < dimension; j++)
-			{
-				if (boolFunc[i][j])
+
+				temp += "x" + std::to_string(j + 1);
+					
+				if (kv_used)
 				{
-					temp += "x" + std::to_string(j + 1);
+					if (kv_order[i][j] == 0)
+					{
+						temp += "=" + std::to_string(dbFunc[i][j]);
+					}
+					else if (kv_order[i][j] == 1)
+					{
+						temp += "<" + std::to_string(dbFunc[i][j]);
+					}
+					else if (kv_order[i][j] == 2)
+					{
+						temp += ">" + std::to_string(dbFunc[i][j]);
+					}
+					else if (kv_order[i][j] == 3)
+					{
+						temp += "<=" + std::to_string(dbFunc[i][j]);
+					}
+					else if (kv_order[i][j] == 4)
+					{
+						temp += ">=" + std::to_string(dbFunc[i][j]);
+					}
 				}
 			}
 		}
 
 		if (!temp.empty() && i > 0)
 		{
-			boolFuncStr += " v " + temp;
+			dbFuncStr += " v " + temp;
 		}
 		else if (!temp.empty())
 		{
-			boolFuncStr += temp;
+			dbFuncStr += temp;
 		}
 	}
 
-	results << boolFuncStr + "\n";
+	results << dbFuncStr + "\n";
 
 	for (int i = 0; i < (int)thresholds.size(); i++)
 	{
 		if (thresholds[i] != std::pair<int, int>(INT_MIN, INT_MAX)) // if not Boolean
 		{
-			if (thresholds[i].first == INT_MIN)
+			if (kv_used)
 			{
-				results << "x" << i + 1 << " [-infinity;" << thresholds[i].second << "]\n";
-			}
-			else if (thresholds[i].second == INT_MAX)
-			{
-				results << "x" << i + 1 << " [" << thresholds[i].first << ";infinity]\n";
+				results << "x" << i + 1 << "; k = " << kv_attributes[i] << ";";
+
+				if (thresholds[i].first == INT_MIN)
+				{
+					results << " lower/upper bound [-infinity;";
+				}
+				else
+				{
+					results << " lower/upper bound [" << thresholds[i].first << ";";
+				}
+
+				if (thresholds[i].second == INT_MAX)
+				{
+					results << "infinity]; ";
+				}
+				else
+				{
+					results << thresholds[i].second << "]; ";
+				}
+
+				results << "kv_thresholds [";
+
+				if (i < kv_thresholds.size())
+				{
+					for (int j = 0; j < kv_thresholds[i].size(); j++)
+					{
+						results << kv_thresholds[i][j] << ";";
+					}
+				}
+
+				results << "]\n";
 			}
 			else
 			{
-				results << "x" << i + 1 << " [" << thresholds[i].first << ";" << thresholds[i].second << "]\n";
+				if (thresholds[i].first == INT_MIN)
+				{
+					results << "x" << i + 1 << " [-infinity;" << thresholds[i].second << "]\n";
+				}
+				else if (thresholds[i].second == INT_MAX)
+				{
+					results << "x" << i + 1 << " [" << thresholds[i].first << ";infinity]\n";
+				}
+				else
+				{
+					results << "x" << i + 1 << " [" << thresholds[i].first << ";" << thresholds[i].second << "]\n";
+				}
+			}
+		}
+		else
+		{
+			if (kv_used)
+			{
+				results << "x" << i + 1 << "; k = " << kv_attributes[i] << ";";
+
+				if (thresholds[i].first == INT_MIN)
+				{
+					results << " lower/upper bound [-infinity;";
+				}
+				else
+				{
+					results << " lower/upper bound [" << thresholds[i].first << ";";
+				}
+
+				if (thresholds[i].second == INT_MAX)
+				{
+					results << "infinity] ";
+				}
+				else
+				{
+					results << thresholds[i].second << "] ";
+				}
+
+				results << "kv_thresholds [";
+
+				if (i < kv_thresholds.size())
+				{
+					for (int j = 0; j < kv_thresholds[i].size(); j++)
+					{
+						results << kv_thresholds[i][j] << ";";
+					}
+				}
+
+				results << "]\n";
 			}
 		}
 	}
 
-	for (int i = 0; i < dimension + 3; i++)
+	results << "original data";
+
+	for (int i = 0; i < dimension + 2; i++)
 	{
 		results << ",";
 	}
 
-	results << "Boolean representation\n";
+	if (kv_used)
+	{
+		results << "k-value representation (can differ if there are numeric attributes)\n";
+	}
+	else
+	{
+		results << "Boolean representation (can differ if there are numeric attributes)\n";
+	}
+	
 
 	for (auto a : attributes)
 	{
 		results << a << ",";
 	}
 
-	results << "class";
+	results << "function value";
 
 	// print attributes for Boolean represenation section
 	std::vector<std::string> temp_vec(attribute_count - dimension);
@@ -404,10 +703,10 @@ void write_func_and_thresholds(std::fstream& results)
 		results << element << ",";
 	}
 
-	results << "class\n";
+	results << "function value\n";
 }
 
-// FIX FOR JSONS!!!
+
 // if datapoint does not contain an attribute which was expanded, then it can still match with boolean function
 std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream& dataset, std::fstream& results)
 {
@@ -416,11 +715,11 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 	std::vector<std::pair<std::vector<int>, std::string>> datapoints;
 	std::getline(dataset, line); // skip first line (attributes)
 
+
 	while (std::getline(dataset, line))
 	{
 		counter++;
 
-		// ADD HERE
 		// check if datapoint is in look up table
 		// if it is, then the datapoint is the size of attribute_count, not the dimension.
 		// moreover, those attributes that are the value in the look up table will be immedietely assigned as 1 in the datapoint 
@@ -429,7 +728,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 
 		if (datapoint_search != expanded_attribute_LUT.end())
 		{
-			datapoint.resize(attribute_count);
+			//datapoint.resize(attribute_count);
 
 			// assign 1s for those attributes that are in search.second
 			for (auto attribute : datapoint_search->second)
@@ -442,11 +741,6 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 				}
 			}
 		}
-		else
-		{
-			//datapoint.resize(dimension);
-		}
-
 
 		// retrieve datapoint
 		std::stringstream s(line);
@@ -458,10 +752,84 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 				c = std::tolower(c);
 			}
 			
-			// if boolean
+			// if boolean or k-value
 			if (thresholds[i] == std::pair<int, int>(INT_MIN, INT_MAX))
 			{
-				if (temp == "yes" || temp == "y" || temp == "true" || temp == "t" || temp == "1")
+				if (kv_used)
+				{
+					// kv_thresholds for numeric data
+					if (kv_thresholds[i].size() > 0)
+					{
+						int num = -1;
+						int bound;
+
+						try
+						{
+							num = stoi(temp);
+						}
+						catch (std::exception& e)
+						{
+							std::cerr << e.what() << std::endl;
+
+							exit(EXIT_FAILURE);
+						}
+
+						// for each k-value 
+						for (int j = 0; j < kv_attributes[i]; j++)
+						{
+							// first kv can have a lower bound
+							if (j == 0)
+							{
+								bound = thresholds[i].first;
+
+								if (bound < num && num <= kv_thresholds[i][j])
+								{
+									datapoint[i] = j;
+									break;
+								}
+							}
+							// last kv can have upper bound
+							else if (j == kv_attributes[i] - 1)
+							{
+								bound = thresholds[i].second;
+
+								if (kv_thresholds[i][j - 1] < num && num <= bound)
+								{
+									datapoint[i] = j;
+									break;
+								}
+							}
+							// else the threshold is in the middle of the k-va
+							else
+							{
+								if (kv_thresholds[i][j - 1] < num && num <= kv_thresholds[i][j])
+								{
+									datapoint[i] = j;
+									break;
+								}
+							}
+						}
+					}
+					// else already kv
+					else
+					{
+						if (isdigit(temp[0])) // else kv; plus, check if number is convertable to an int before putting it in datapoint
+						{
+							try
+							{
+								datapoint[i] = stoi(temp);
+							}
+							catch (std::exception& e)
+							{
+								std::cerr << e.what() << std::endl;
+								std::cout << "Value in dataset not convertable from string to number (k-value)." << std::endl;
+
+								exit(EXIT_FAILURE);
+							}
+						}
+					}
+				}
+				else if (temp == "yes" || temp == "y" || temp == "true" || temp == "t" || temp == "1")
 				{
 					datapoint[i] = 1;
 				}
@@ -470,13 +838,98 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 					datapoint[i] = 0;
 				}
 			}
+			else if (kv_used)
+			{
+				// kv_thresholds for numeric data
+				if (kv_thresholds[i].size() > 0)
+				{
+					int num = -1;
+					int bound;
+
+					try
+					{
+						num = stoi(temp);
+					}
+					catch (std::exception& e)
+					{
+						std::cerr << e.what() << std::endl;
+
+						exit(EXIT_FAILURE);
+					}
+
+					// for each k-value 
+					for (int j = 0; j < kv_attributes[i]; j++)
+					{
+						// first kv can have a lower bound
+						if (j == 0)
+						{
+							bound = thresholds[i].first;
+
+							if (bound <= num && num <= kv_thresholds[i][j])
+							{
+								datapoint[i] = j;
+								break;
+							}
+						}
+						// last kv can have upper bound
+						else if (j == kv_attributes[i] - 1)
+						{
+							bound = thresholds[i].second;
+
+							if (kv_thresholds[i][j - 1] <= num && num <= bound)
+							{
+								datapoint[i] = j;
+								break;
+							}
+						}
+						// else the threshold is in the middle of the k-va
+						else 
+						{
+							if (kv_thresholds[i][j - 1] <= num && num <= kv_thresholds[i][j])
+							{
+								datapoint[i] = j;
+								break;
+							}
+						}
+					}
+				}
+				// else already kv
+				else
+				{
+					if (isdigit(temp[0])) // else kv; plus, check if number is convertable to an int before putting it in datapoint
+					{
+						try
+						{
+							datapoint[i] = stoi(temp);
+						}
+						catch (std::exception& e)
+						{
+							std::cerr << e.what() << std::endl;
+							std::cout << "Value in dataset not convertable from string to number (k-value)." << std::endl;
+
+							exit(EXIT_FAILURE);
+						}
+					}
+				}
+			}
 			else
 			{
 				// else if datapoint is not Boolean
 				auto threshold = thresholds[i];
-				int num = stoi(temp);
+				int num = -1;
 
-				if (threshold.first <= num && num <= threshold.second) // in range
+				try
+				{
+					num = stoi(temp);
+				}
+				catch (std::exception& e)
+				{
+					std::cerr << e.what() << std::endl;
+
+					exit(EXIT_FAILURE);
+				}
+
+				if (threshold.first < num && num <= threshold.second) // in range
 				{
 					datapoint[i] = 1;
 				}
@@ -487,7 +940,6 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 			}
 		}
 
-		// ADD HERE
 		// IF IMAGE LABELS, then check to see if a particular datapoint is in the look-up table
 		// if it is, then the inner for loop is attribute_count, not the dimension
 		// otherwise the double for loop works the same.
@@ -496,11 +948,11 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 		// 
 		// check if datapoint matches a clause in the Boolean function
 		// clauses represent if a clause in the Boolean function is true or false for a given datapoint
-		std::vector<bool> clauses(boolFunc.size(), true); // if clause i is true, then clauses[i] = true
+		std::vector<bool> clauses(dbFunc.size(), true); // if clause i is true, then clauses[i] = true
 
-		if (image_labels)
+		if (image_labels && !kv_used)
 		{
-			for (int i = 0; i < (int)boolFunc.size(); i++)
+			for (int i = 0; i < (int)dbFunc.size(); i++)
 			{
 				if (expanded_attribute_LUT.find(counter) == expanded_attribute_LUT.end())
 				{
@@ -510,25 +962,26 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 					{
 						// if boolean function at one point is true and the datapoint at that point is not true, then datapoint is a class of 0
 						// otherwise, if clause of function is true and datapoint is also true for those attributes, then it passes and is a class of 1
-						if (boolFunc[i][j] && !datapoint[j])
+						if (dbFunc[i][j] && !datapoint[j])
 						{
 							clauses[i] = false;
 							stop = true;
 							break; // try next clause
 						} 
-						else if (boolFunc[i][j] && datapoint[j]) 
+						else if (dbFunc[i][j] && datapoint[j]) 
 						{
 							stop = true;
 						}
 					}
 
-					// make sure that a clause is false if a clause is all zeroes until an expanded attribute, 
-					// it will be falsely marked as true
+					// make sure that a clause is false:
+					//  if a clause is all zeroes until an expanded attribute, 
+					// it will be falsely marked as true becauses clauses is constructed with all values as true
 					if (!stop)
 					{
 						for (int j = dimension; j < attribute_count; j++)
 						{
-							if (boolFunc[i][j])
+							if (dbFunc[i][j])
 							{
 								clauses[i] = false;
 							}
@@ -541,7 +994,7 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 					{
 						// if boolean function at one point is true and the datapoint at that point is not true, then datapoint is a class of 0
 						// otherwise, if clause of function is true and datapoint is also true for those attributes, then it passes and is a class of 1
-						if (boolFunc[i][j] && !datapoint[j])
+						if (dbFunc[i][j] && !datapoint[j])
 						{
 							clauses[i] = false;
 							break; // try next clause
@@ -550,18 +1003,71 @@ std::vector<std::pair<std::vector<int>, std::string>> parse_dataset(std::fstream
 				}
 			}
 		}
-		else
+		else if (!kv_used)
 		{
-			for (int i = 0; i < (int)boolFunc.size(); i++)
+			for (int i = 0; i < (int)dbFunc.size(); i++)
 			{
 				for (int j = 0; j < dimension; j++)
 				{
 					// if boolean function at one point is true and the datapoint at that point is not true, then datapoint is a class of 0
 					// otherwise, if clause of function is true and datapoint is also true for those attributes, then it passes and is a class of 1
-					if (boolFunc[i][j] && !datapoint[j])
+					if (dbFunc[i][j] && !datapoint[j])
 					{
 						clauses[i] = false;
 						break; // try next clause
+					}
+				}
+			}
+		}
+		else if (image_labels && kv_used)
+		{
+			// ADD HERE
+		}
+		else if (kv_used)
+		{
+			for (int i = 0; i < (int)dbFunc.size(); i++)
+			{
+				for (int j = 0; j < dimension; j++)
+				{
+					if (kv_order[i][j] == 0) // if dbFunc is true, then datapoint must be true
+					{
+						if (dbFunc[i][j] != -1 && datapoint[j] != dbFunc[i][j]) // check if false
+						{
+							clauses[i] = false;
+							break; // try next clause
+						}
+					}
+					else if (kv_order[i][j] == 1) // datapoint[j] must be less than dbFunc to be true
+					{
+						if (dbFunc[i][j] != -1 && datapoint[j] >= dbFunc[i][j])  // check if false
+						{
+							clauses[i] = false;
+							break; // try next clause
+						}
+					}
+					else if (kv_order[i][j] == 2) // datapoint[j] must be greater than the dbFunc to be true in this case because function was input with >
+					{
+						if (dbFunc[i][j] != -1 && datapoint[j] <= dbFunc[i][j]) // dbFunc[i] [0, 1, 0, 0]]; datapoint [0, 2, 0, 0]; datapoint has class of true
+						{
+							clauses[i] = false;
+							break; // try next clause
+						}
+					}
+					else if (kv_order[i][j] == 3) // datapoint[j] must be <= to be true
+					{
+						if (dbFunc[i][j] != -1 && datapoint[j] > dbFunc[i][j])
+						{
+							clauses[i] = false;
+							break; // try next clause
+						}
+					}
+					else if (kv_order[i][j] == 4) // datapoint[j] must be >= to be true
+					{
+						if (dbFunc[i][j] != -1 && datapoint[j] < dbFunc[i][j])
+						{
+							clauses[i] = false;
+							break; // try next clause
+						}
 					}
 				}
 			}
@@ -596,7 +1102,6 @@ int main()
 {
 	// open dataset
 	std::fstream dataset;
-	//dataset.open("dataset.csv", std::ios::in); // read only
 	dataset.open(filename, std::ios::in);
 	std::string line, temp;
 
@@ -626,13 +1131,17 @@ int main()
 		dimension = (int)attributes.size();
 	}
 
+	attribute_count = dimension;
+	kv_attributes.resize(dimension);
+	std::fill(kv_attributes.begin(), kv_attributes.end(), 2);
+
 	// parse dataset
 	std::cout << "For the given dataset (dataset.csv in the current directory), the class will be appended to the end of each datapoint"
 		<< " by using the Boolean Function that was input." << std::endl;
 
 	if (dataset.is_open())
 	{
-		if (!get_boolFunc(dataset))
+		if (!get_dbFunc(dataset))
 		{
 			return EXIT_FAILURE;
 		}
@@ -678,6 +1187,7 @@ int main()
 			results << datapoint.first[attribute_count] << "\n"; // datapoint is + 1 because of CLASS/value
 		}
 
+		results << "\n";
 		results.close();
 	}
 	else
